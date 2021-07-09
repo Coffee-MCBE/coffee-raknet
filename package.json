@@ -1,0 +1,19 @@
+{
+  "name": "coffee-raknet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && cd dist && node Main"
+  },
+  "keywords": [],
+  "author": "AdiPol1359",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.3.0"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1"
+  }
+}
