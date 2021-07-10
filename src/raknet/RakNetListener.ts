@@ -3,14 +3,16 @@ import Crypto from 'crypto';
 import ProtocolInfo from './util/ProtocolInfo';
 import UnconnectedPong from './protocol/UnconnectedPong';
 import ServerName from './util/ServerName';
+import { EventEmitter } from 'stream';
 
-class RakNetListener {
+class RakNetListener extends EventEmitter {
 
     declare private socket: Socket;
 
     private id: bigint;
 
     constructor() {
+        super();
         this.id = Crypto.randomBytes(8).readBigInt64BE();
     }
 
@@ -28,16 +30,20 @@ class RakNetListener {
 
         switch(pid) {
             case ProtocolInfo.UnconnectedPing:
-                const pkt = new UnconnectedPong();
-
-                pkt.timestamp = BigInt(Date.now());
-                pkt.serverGuid = this.id;
-                pkt.serverName = new ServerName('Coffee Server', '390', '1.17.2', '0', '1', '19132').toString();
-
-                pkt.encodePayload();
-                this.sendBuffer(pkt.buffer, rinfo);
+                this.emit('unconnectedPing', rinfo);
                 break;
         }
+    }
+
+    public pong(rinfo: RemoteInfo, motd: string, protocol: string, version: string, players: string, onlinePlayers: string, port: string) {
+        const pkt = new UnconnectedPong();
+
+        pkt.timestamp = BigInt(Date.now());
+        pkt.serverGuid = this.id;
+        pkt.serverName = new ServerName(motd, protocol, version, players, onlinePlayers, port).toString();
+
+        pkt.encodePayload();
+        this.sendBuffer(pkt.buffer, rinfo);
     }
 
     public sendBuffer(buffer: Buffer, rinfo: RemoteInfo) {
