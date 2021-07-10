@@ -1,5 +1,5 @@
 # Coffee RakNet
-Coffee RakNet is a simple RakNet wrote in TypeScript based on [Raknet Protcol]("https://wiki.vg/Raknet_Protocol").
+Coffee RakNet is a simple RakNet wrote in TypeScript based on [Raknet Protcol](https://wiki.vg/Raknet_Protocol).
 
 ## Run
 ``` text
