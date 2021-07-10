@@ -89,11 +89,9 @@ class BinaryStream {
     }
 
     public addOffset(offset: number, prev: boolean = true) : number {
-        const prevOffset = this.offset;
-        
-        this.offset += offset;
-
-        return prev ? prevOffset : this.offset;
+        return prev
+        ? (offset += length) - length
+        : offset += length
     }
 }
 
