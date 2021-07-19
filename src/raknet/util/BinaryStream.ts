@@ -17,7 +17,7 @@ class BinaryStream {
     }
 
     public readByte() : number {
-        return this.buffer.readInt8(this.addOffset(1));
+        return this.buffer.readUInt8(this.addOffset(1));
     }
 
     public writeByte(v: number) : void {
@@ -90,8 +90,8 @@ class BinaryStream {
 
     public addOffset(offset: number, prev: boolean = true) : number {
         return prev
-        ? (offset += length) - length
-        : offset += length
+        ? (this.offset += offset) - offset
+        : this.offset += offset;
     }
 }
 
