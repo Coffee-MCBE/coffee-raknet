@@ -91,6 +91,14 @@ class BinaryStream {
         this.write(Buffer.from(v, 'utf-8'));
     }
 
+    public readBoolean() : boolean {
+        return this.readByte() == 0 ? false : true;
+    }
+
+    public writeBoolen(v: boolean) : void {
+        this.writeByte(v ? 1 : 0);
+    }
+
     public addOffset(offset: number, prev: boolean = true) : number {
         return prev
         ? (this.offset += offset) - offset
