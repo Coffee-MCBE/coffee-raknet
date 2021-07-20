@@ -21,15 +21,6 @@ class Packet extends BinaryStream {
     public encodePayload() : void {
         this.writeByte(this.id);
     }
-
-    public readString() : void {
-        this.read(this.readShort());
-    }
-
-    public writeString(v: string) : void {
-        this.writeShort(Buffer.byteLength(v));
-        this.write(Buffer.from(v, 'utf-8'));
-    }
 }
 
 export default Packet;
