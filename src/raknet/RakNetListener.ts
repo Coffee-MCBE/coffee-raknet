@@ -4,6 +4,8 @@ import ProtocolInfo from './util/ProtocolInfo';
 import UnconnectedPong from './protocol/UnconnectedPong';
 import ServerName from './util/ServerName';
 import { EventEmitter } from 'stream';
+import OpenConnectionRequest1 from './protocol/OpenConnectionRequest1';
+import OpenConnectionReply1 from './protocol/OpenConnectionReply1';
 
 class RakNetListener extends EventEmitter {
 
@@ -33,6 +35,24 @@ class RakNetListener extends EventEmitter {
         switch(pid) {
             case ProtocolInfo.UnconnectedPing:
                 this.emit('unconnectedPing', rinfo);
+                break;
+            case ProtocolInfo.OpenConnectionRequest1:
+                const decodePacket = new OpenConnectionRequest1();
+
+                decodePacket.buffer = buffer;
+                decodePacket.decodePayload();
+
+                const pkt = new OpenConnectionReply1();
+
+                pkt.serverGuid = this.guid;
+                pkt.security = false;
+                pkt.mtuSize = decodePacket.mtuSize;
+                pkt.encodePayload();
+
+                this.sendBuffer(pkt.buffer, rinfo);
+                break;
+            case ProtocolInfo.OpenConnectionRequest2:
+                console.log("pkt");
                 break;
         }
     }
