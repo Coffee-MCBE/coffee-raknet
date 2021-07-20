@@ -17,7 +17,7 @@ class UnconnectedPong extends OfflinePacket {
         this.timestamp = this.readLong();
         this.serverGuid = this.readLong();
         this.readMagic();
-        this.serverName = this.readRemaing().toString();
+        this.serverName = this.readString();
     }
 
     encodePayload() : void {
