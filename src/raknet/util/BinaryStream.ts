@@ -82,16 +82,24 @@ class BinaryStream {
         this.write(buf);
     }
 
-    public readRemaing() : Buffer {
-        const buf = this.buffer.slice(this.offset);
-        this.offset = this.buffer.length;
-        return buf;
+    public readString() : string {
+        return this.read(this.readShort()).toString();
+    }
+
+    public writeString(v: string) : void {
+        this.writeShort(Buffer.byteLength(v));
+        this.write(Buffer.from(v, 'utf-8'));
     }
 
     public addOffset(offset: number, prev: boolean = true) : number {
         return prev
-        ? (offset += length) - length
-        : offset += length
+        ? (this.offset += offset) - offset
+        : this.offset += offset
+    }
+
+    public reset(offset: number = 0) : void {
+        this.buffer = Buffer.alloc(0);
+        this.offset = offset;
     }
 }
 
