@@ -24,7 +24,7 @@ class Packet extends BinaryStream {
     }
 
     //TODO: ADD SUPPORT FOR ipv6
-    public readAddress() : InetAddress|null {
+    public readAddress() : InetAddress {
         const version = this.readByte();
         
         if(version === 4) {
@@ -34,7 +34,7 @@ class Packet extends BinaryStream {
             return new InetAddress(address, port, version);
         }
 
-        return null;
+        return new InetAddress('0.0.0.0', -1, -1);
     }
 
     //TODO: ADD SUPPORT FOR ipv6
