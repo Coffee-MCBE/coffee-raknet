@@ -6,6 +6,7 @@ import ServerName from './util/ServerName';
 import { EventEmitter } from 'stream';
 import OpenConnectionRequest1 from './protocol/OpenConnectionRequest1';
 import OpenConnectionReply1 from './protocol/OpenConnectionReply1';
+import OpenConnectionRequest2 from './protocol/OpenConnectionRequest2';
 
 class RakNetListener extends EventEmitter {
 
@@ -52,7 +53,12 @@ class RakNetListener extends EventEmitter {
                 this.sendBuffer(pkt.buffer, rinfo);
                 break;
             case ProtocolInfo.OpenConnectionRequest2:
-                console.log("pkt");
+                const pktt = new OpenConnectionRequest2();
+
+                pktt.buffer = buffer;
+                pktt.decodePayload();
+
+                console.log("adrress: " + pktt.address.getAddress());
                 break;
         }
     }
