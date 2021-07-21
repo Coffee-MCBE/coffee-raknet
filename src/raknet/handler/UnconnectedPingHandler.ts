@@ -7,10 +7,13 @@ class UnconnectedPingHandler extends PacketHandler {
     
     public handle(listener: RakNetListener, buffer: Buffer) : Buffer {
         const decodePacket = new UnconnectedPing();
-        
+
+        decodePacket.buffer = buffer;
+        decodePacket.decodePayload();
+
         const pkt = new UnconnectedPong();
 
-        pkt.timestamp = BigInt(Date.now());
+        pkt.timestamp = decodePacket.timestamp;
         pkt.serverGuid = listener.getGuid();
         pkt.serverName = listener.getServerName().toString();
 
