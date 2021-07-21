@@ -1,5 +1,3 @@
-import OpenConnectionReply1 from "../protocol/OpenConnectionReply1";
-
 export default {
     UnconnectedPing: 0x01,
     UnconnectedPong: 0x1c,
