@@ -71,6 +71,17 @@ class BinaryStream {
         this.write(buf);
     }
 
+    public readUnsignedShort() : number {
+        return this.buffer.readUInt16BE(this.addOffset(2));
+    }
+
+    public writeUnsignedShort(v: number) : void {
+        const buf = Buffer.alloc(2);
+        
+        buf.writeUInt16BE(v);
+        this.write(buf);
+    }
+
     public readLong() : bigint {
         return this.buffer.readBigInt64BE(this.addOffset(8));
     }
