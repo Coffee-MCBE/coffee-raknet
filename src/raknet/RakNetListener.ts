@@ -1,22 +1,24 @@
 import udp, { RemoteInfo, Socket } from 'dgram';
 import Crypto from 'crypto';
 import ProtocolInfo from './util/ProtocolInfo';
-import UnconnectedPong from './protocol/UnconnectedPong';
 import ServerName from './util/ServerName';
 import { EventEmitter } from 'stream';
-import OpenConnectionRequest1 from './protocol/OpenConnectionRequest1';
-import OpenConnectionReply1 from './protocol/OpenConnectionReply1';
-import OpenConnectionRequest2 from './protocol/OpenConnectionRequest2';
+import OpenConnectionRequest1Handler from './handler/OpenConnectionRequest1Handler';
+import OpenConnectionRequest2Handler from './handler/OpenConnectionRequest2Handler';
+import UnconnectedPingHandler from './handler/UnconnectedPingHandler';
 
 class RakNetListener extends EventEmitter {
 
     private guid: bigint;
+    private serverName: ServerName;
 
     declare private socket: Socket;
 
     constructor() {
         super();
+
         this.guid = Crypto.randomBytes(8).readBigInt64BE();
+        this.serverName = new ServerName();
     }
 
     public listen(port: number) : RakNetListener {
@@ -35,47 +37,27 @@ class RakNetListener extends EventEmitter {
 
         switch(pid) {
             case ProtocolInfo.UnconnectedPing:
-                this.emit('unconnectedPing', rinfo);
+                this.sendBuffer(new UnconnectedPingHandler().handle(this, buffer), rinfo);
                 break;
             case ProtocolInfo.OpenConnectionRequest1:
-                const decodePacket = new OpenConnectionRequest1();
-
-                decodePacket.buffer = buffer;
-                decodePacket.decodePayload();
-
-                const pkt = new OpenConnectionReply1();
-
-                pkt.serverGuid = this.guid;
-                pkt.security = false;
-                pkt.mtuSize = decodePacket.mtuSize;
-                pkt.encodePayload();
-
-                this.sendBuffer(pkt.buffer, rinfo);
+                this.sendBuffer(new OpenConnectionRequest1Handler().handle(this, buffer), rinfo);
                 break;
             case ProtocolInfo.OpenConnectionRequest2:
-                const pktt = new OpenConnectionRequest2();
-
-                pktt.buffer = buffer;
-                pktt.decodePayload();
-
-                console.log("adrress: " + pktt.address.getAddress());
+                new OpenConnectionRequest2Handler().handle(this, buffer);
                 break;
         }
     }
 
-    public pong(rinfo: RemoteInfo, motd: string, protocol: string, version: string, players: string, onlinePlayers: string, port: string) : void {
-        const pkt = new UnconnectedPong();
-
-        pkt.timestamp = BigInt(Date.now());
-        pkt.serverGuid = this.guid;
-        pkt.serverName = new ServerName(motd, protocol, version, players, onlinePlayers, port).toString();
-
-        pkt.encodePayload();
-        this.sendBuffer(pkt.buffer, rinfo);
-    }
-
     public sendBuffer(buffer: Buffer, rinfo: RemoteInfo) : void {
         this.socket.send(buffer, 0, buffer.length, rinfo.port, rinfo.address)
+    }
+
+    public getGuid() : bigint {
+        return this.guid;
+    }
+
+    public getServerName() : ServerName {
+        return this.serverName;
     }
 }
 
