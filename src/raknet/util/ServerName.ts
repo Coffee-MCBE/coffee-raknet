@@ -1,19 +1,18 @@
 class ServerName {
 
-    private motd: string;
-    private protcol: string;
-    private version: string;
-    private onlinePlayers: string;
-    private maxPlayers: string;
-    private port: string;
+    private motd: string = 'Coffee Server';
+    private protcol: string = '390';
+    private version: string = '1.17.2';
+    private onlinePlayers: string = '0';
+    private maxPlayers: string = '1';
+    private port: string = '19132';
 
-    constructor(motd: string, protocol: string, version: string, onlinePlayers: string, maxPlayers: string, port: string) {
+    public getMotd() : string {
+        return this.motd;
+    }
+
+    public setMotd(motd: string) : void {
         this.motd = motd;
-        this.protcol = protocol;
-        this.version = version;
-        this.onlinePlayers = onlinePlayers;
-        this.maxPlayers = maxPlayers;
-        this.port = port;
     }
 
     public toString() : string {
