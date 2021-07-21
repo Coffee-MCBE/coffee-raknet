@@ -6,7 +6,6 @@ class UnconnectedPing extends OfflinePacket {
     declare public timestamp: bigint;
     declare public clinetGuid: bigint;
 
-
     constructor() {
         super(ProtocolInfo.UnconnectedPing);
     }
@@ -20,7 +19,11 @@ class UnconnectedPing extends OfflinePacket {
     }
 
     encodePayload() : void {
-        //EMPTY
+        this.encodePayload();
+
+        this.writeLong(this.timestamp);
+        this.writeMagic();
+        this.writeLong(this.clinetGuid);
     }
 }
 
