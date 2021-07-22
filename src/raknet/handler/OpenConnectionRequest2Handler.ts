@@ -1,16 +1,24 @@
 import PacketHandler from './PacketHandler';
 import RakNetListener from '../RakNetListener';
 import OpenConnectionRequest2 from '../protocol/OpenConnectionRequest2';
+import OpenConnectionReply2 from '../protocol/OpenConnectionReply2';
 
 class OpenConnectionRequest2Handler extends PacketHandler {
     
     public handle(listener: RakNetListener, buffer: Buffer) : Buffer {
-        const pkt = new OpenConnectionRequest2();
+        const decodePacket = new OpenConnectionRequest2();
 
-        pkt.buffer = buffer;
-        pkt.decodePayload();
+        decodePacket.buffer = buffer;
+        decodePacket.decodePayload();
+  
+        const pkt = new OpenConnectionReply2();
 
-        console.log("adrress: " + pkt.address.getAddress());
+        pkt.serverGuid = listener.getGuid();
+        pkt.clientAddress = decodePacket.address;
+        pkt.mtuSize = decodePacket.mtuSize;
+        pkt.enableEcryption = false;
+
+        pkt.encodePayload();
 
         return pkt.buffer;
     }

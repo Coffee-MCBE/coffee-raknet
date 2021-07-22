@@ -2,7 +2,8 @@ import PacketHandler from './PacketHandler';
 import RakNetListener from '../RakNetListener';
 import OpenConnectionRequest1 from '../protocol/OpenConnectionRequest1';
 import OpenConnectionReply1 from '../protocol/OpenConnectionReply1';
-
+import ProtocolInfo from '../util/ProtocolInfo';
+import IncompatibleProtocol from '../protocol/IncompatibleProtocol';
 
 class OpenConnectionRequest1Handler extends PacketHandler {
     
@@ -11,6 +12,17 @@ class OpenConnectionRequest1Handler extends PacketHandler {
 
         decodePacket.buffer = buffer;
         decodePacket.decodePayload();
+
+        if(decodePacket.protocolVersion !== ProtocolInfo.CURRENT_PROTOCOL) {
+            const pkt = new IncompatibleProtocol();
+
+            pkt.protocol = decodePacket.protocolVersion;
+            pkt.serverGuid = listener.getGuid();
+
+            pkt.encodePayload();
+
+            return pkt.buffer;
+        }
 
         const pkt = new OpenConnectionReply1();
 
