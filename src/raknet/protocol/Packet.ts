@@ -28,7 +28,7 @@ class Packet extends BinaryStream {
         const version = this.readByte();
         
         if(version === 4) {
-            const address = `${(~this.readByte()) & 0xff}.${(~this.readByte()) & 0xff}.${(~this.readByte()) & 0xff}.${(~this.readByte()) & 0xff}`;
+            const address = `${(~this.readUnsignedByte()) & 0xff}.${(~this.readUnsignedByte()) & 0xff}.${(~this.readUnsignedByte()) & 0xff}.${(~this.readUnsignedByte()) & 0xff}`;
             const port = this.readUnsignedShort();
 
             return new InetAddress(address, port, version);
@@ -40,7 +40,7 @@ class Packet extends BinaryStream {
     //TODO: ADD SUPPORT FOR ipv6
     public writeAddress(address: InetAddress) {
         this.writeByte(address.getVersion());
-        address.getAddress().split('.', 4).forEach(n => this.writeByte((~parseInt(n)) & 0xff));
+        address.getAddress().split('.', 4).forEach(n => this.writeUnsignedByte((~parseInt(n)) & 0xff));
         this.writeUnsignedShort(address.getPort());
     }
 }
