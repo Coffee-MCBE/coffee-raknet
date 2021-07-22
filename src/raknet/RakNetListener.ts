@@ -34,7 +34,7 @@ class RakNetListener extends EventEmitter {
 
     public handle(buffer: Buffer, rinfo: RemoteInfo) : void {
         const pid = buffer.readUInt8();
-
+        
         switch(pid) {
             case ProtocolInfo.UnconnectedPing:
                 this.sendBuffer(new UnconnectedPingHandler().handle(this, buffer), rinfo);
@@ -43,7 +43,7 @@ class RakNetListener extends EventEmitter {
                 this.sendBuffer(new OpenConnectionRequest1Handler().handle(this, buffer), rinfo);
                 break;
             case ProtocolInfo.OpenConnectionRequest2:
-                new OpenConnectionRequest2Handler().handle(this, buffer);
+                this.sendBuffer(new OpenConnectionRequest2Handler().handle(this, buffer), rinfo);
                 break;
         }
     }
