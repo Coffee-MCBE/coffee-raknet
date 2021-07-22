@@ -1,4 +1,5 @@
 import OfflinePacket from './OfflinePacket';
+import ProtocolInfo from '../util/ProtocolInfo';
 
 class OpenConnectionReply1 extends OfflinePacket {
 
@@ -7,7 +8,7 @@ class OpenConnectionReply1 extends OfflinePacket {
     declare public mtuSize: number;
 
     constructor() {
-        super(0x06);
+        super(ProtocolInfo.OpenConnectionReply1);
     }
 
     decodePayload() {
